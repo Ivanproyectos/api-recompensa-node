@@ -1,4 +1,4 @@
-import { check } from 'express-validator'
+import { check, param } from 'express-validator'
 import { Request, Response, NextFunction } from 'express'
 import { validateResult } from '../helpers/validateHelper'
 
@@ -13,6 +13,17 @@ export const validateCreate = [
   check('tipoPeligroId', 'El tipo de peligro es obligatorio').notEmpty()
     .isNumeric()
     .withMessage('el tipo de peligro debe ser un número'),
+  (req: Request, res: Response, next: NextFunction) => {
+    validateResult(req, res, next)
+  }
+]
+
+export const valiteUpdate = [
+  param('id').isInt().withMessage('El ID debe ser un número entero'),
+  ...validateCreate
+]
+export const valiteDelete = [
+  param('id').isInt().withMessage('El ID debe ser un número entero'),
   (req: Request, res: Response, next: NextFunction) => {
     validateResult(req, res, next)
   }
