@@ -5,28 +5,26 @@ import { NivelPeligro } from '../models/peligrosidad.model'
 export const getBuscados = async (req: Request, res: Response): Promise<void> => {
   try {
     const buscados = await BuscadoModel.findAll({
-      attributes: { exclude: ['tipo_peligro_id', 'createdAt', 'updatedAt'] },
+      attributes: { exclude: ['tipoPeligroId', 'createdAt', 'updatedAt'] },
       include: [
         {
           model: NivelPeligro,
-          as: 'nivelPeligro', // Alias que usamos en la relación
-          attributes: ['nombre'] // Traer solo la descripción de la categoría
+          as: 'nivelPeligro',
+          attributes: ['nombre']
         }
       ]
     })
-    const buscadosMap = buscados.map(buscado => {
-      buscado.image = `${req.protocol}://${req.get('host') ?? 'localhost'}/images/${buscado.image}`
-      return buscado
-    })
-    res.json(buscadosMap)
+    const apiImageUrl = `${req.protocol}://${req.get('host') ?? 'localhost'}/api/download/image/`
+    const buscadosWithImageUrl = buscados.map(buscado => ({
+      ...buscado.get({ plain: true }),
+      image: `${apiImageUrl}${buscado.image}`
+    }))
+    res.json(buscadosWithImageUrl)
   } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      msg: 'Internal server error, contact API administrator'
-    })
+    res.status(500).json({ message: 'Internal server error, contact API administrator' })
   }
 }
-export const getByIdBuscados = async (req: Request, res: Response): Promise<void> => {
+export const getByIdBuscados = async (req: Request, res: Response): Promise<Response> => {
   try {
     const id = req.params.id
     const buscado = await BuscadoModel.findByPk(id, {
@@ -39,11 +37,21 @@ export const getByIdBuscados = async (req: Request, res: Response): Promise<void
         }
       ]
     })
-    res.status(200).json(buscado)
+    if (buscado == null) {
+      return res.status(404).json({
+        msg: 'persona buscada no encontrado'
+      })
+    }
+    const apiImageUrl = `${req.protocol}://${req.get('host') ?? 'localhost'}/api/download/image/`
+    const buscadoWithImageUrl = {
+      ...buscado.get({ plain: true }),
+      image: `${apiImageUrl}${buscado.image}`
+    }
+    return res.status(200).json(buscadoWithImageUrl)
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      msg: 'Internal server error, contact API administrator'
+    return res.status(500).json({
+      error: 'Internal server error, contact API administrator'
     })
   }
 }
@@ -51,7 +59,7 @@ export const postBuscados = async (req: Request, res: Response): Promise<void> =
   try {
     const { nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion } = req.body
     const filename = req?.file?.filename ?? 'no-image.png'
-    // await BuscadoModel.create({ nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, image: filename })
+    await BuscadoModel.create({ nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, image: filename })
     res.status(201).send()
   } catch (error) {
     console.error(error)
