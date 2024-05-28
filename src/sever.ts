@@ -1,9 +1,11 @@
 import express, { Application } from 'express'
 import helmet from 'helmet'
+import cors from 'cors'
 import { sequelize } from './database/recompensadb'
 import buscadosRoute from './routes/buscado.route'
 import indexRoute from './routes/index.route'
 import authRoute from './routes/auth.route'
+import donwloadRoute from './routes/donwload.route'
 import config from './config'
 
 class Server {
@@ -15,8 +17,14 @@ class Server {
   }
 
   middleware (): void {
-    this.app.use(helmet())
+    this.app.use(helmet({
+      crossOriginResourcePolicy: false
+    }))
+    // esta configuracion establece que nustra carpeta public es un ruta estatica para servir recursos multimedia
+    // this.app.use(express.static('public'))
+    // this.app.use(helmet())
     this.app.use(express.json())
+    this.app.use(cors())
   }
 
   async dbContection (): Promise<void> {
@@ -29,8 +37,12 @@ class Server {
 
   routes (): void {
     this.app.use(indexRoute)
-    this.app.use('/api', buscadosRoute)
     this.app.use(authRoute)
+    this.app.use('/api', buscadosRoute)
+    this.app.use('/api', donwloadRoute)
+    this.app.use((req, res) => {
+      res.status(404).send({ error: 'enpoint not found' })
+    })
   }
 
   listen (): void {

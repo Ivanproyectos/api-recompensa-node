@@ -6,6 +6,7 @@ export interface IBuscado {
   recompensa: string
   categoriaId: number
   tipoPeligroId: number
+  image: string
 }
 
 export type newBuscado = Omit<IBuscado, 'id'>

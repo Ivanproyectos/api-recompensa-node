@@ -16,6 +16,7 @@ export const validateCreate = [
   check('tipoPeligroId', 'El tipo de peligro es obligatorio').notEmpty()
     .isNumeric()
     .withMessage('el tipo de peligro debe ser un número'),
+  check('image', 'La imagen es obligatoria').notEmpty(),
   (req: Request, res: Response, next: NextFunction) => {
     validateResult(req, res, next)
   }

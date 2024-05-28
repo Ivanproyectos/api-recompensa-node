@@ -37,6 +37,10 @@ export const BuscadoModel = sequelize.define<BuscadoInstance>('buscado', {
   tipoPeligroId: {
     type: DataTypes.INTEGER,
     field: 'tipo_peligro_id' // Define el nombre en snake_case para la columna
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
 })
 

@@ -14,7 +14,11 @@ export const getBuscados = async (req: Request, res: Response): Promise<void> =>
         }
       ]
     })
-    res.json(buscados)
+    const buscadosMap = buscados.map(buscado => {
+      buscado.image = `${req.protocol}://${req.get('host') ?? 'localhost'}/images/${buscado.image}`
+      return buscado
+    })
+    res.json(buscadosMap)
   } catch (error) {
     console.log(error)
     res.status(500).json({
@@ -46,7 +50,8 @@ export const getByIdBuscados = async (req: Request, res: Response): Promise<void
 export const postBuscados = async (req: Request, res: Response): Promise<void> => {
   try {
     const { nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion } = req.body
-    await BuscadoModel.create({ nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion })
+    const filename = req?.file?.filename ?? 'no-image.png'
+    // await BuscadoModel.create({ nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, image: filename })
     res.status(201).send()
   } catch (error) {
     console.error(error)
