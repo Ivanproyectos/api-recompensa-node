@@ -2,6 +2,9 @@ import { check, param } from 'express-validator'
 import { Request, Response, NextFunction } from 'express'
 import { validateResult } from '../helpers/validateHelper'
 
+const validateIdparam = [
+  param('id').isInt().withMessage('El ID debe ser un número entero')
+]
 export const validateCreate = [
   check('nombre', 'El nombre es obligatorio').notEmpty(),
   check('apellidos', 'Los apellidos son obligatorios').notEmpty(),
@@ -19,11 +22,11 @@ export const validateCreate = [
 ]
 
 export const valiteUpdate = [
-  param('id').isInt().withMessage('El ID debe ser un número entero'),
+  ...validateIdparam,
   ...validateCreate
 ]
 export const valiteDelete = [
-  param('id').isInt().withMessage('El ID debe ser un número entero'),
+  ...validateIdparam,
   (req: Request, res: Response, next: NextFunction) => {
     validateResult(req, res, next)
   }

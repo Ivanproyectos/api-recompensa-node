@@ -3,6 +3,7 @@ import helmet from 'helmet'
 import { sequelize } from './database/recompensadb'
 import buscadosRoute from './routes/buscado.route'
 import indexRoute from './routes/index.route'
+import authRoute from './routes/auth.route'
 import config from './config'
 
 class Server {
@@ -29,6 +30,7 @@ class Server {
   routes (): void {
     this.app.use(indexRoute)
     this.app.use('/api', buscadosRoute)
+    this.app.use(authRoute)
   }
 
   listen (): void {
