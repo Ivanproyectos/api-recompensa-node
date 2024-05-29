@@ -23,41 +23,62 @@ const donwload_route_1 = __importDefault(require("./routes/donwload.route"));
 const config_1 = __importDefault(require("./config"));
 class Server {
     constructor() {
-        this.app = (0, express_1.default)();
-        this.middleware();
-        this.routes();
+        this.expressApp = (0, express_1.default)();
+        this.initializeApp();
+    }
+    initializeApp() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.configureMiddleware();
+            this.configureRoutes();
+            yield this.connectToDatabase();
+        });
+    }
+    configureMiddleware() {
+        this.expressApp.use((0, helmet_1.default)());
+        this.expressApp.use(express_1.default.json());
+        this.expressApp.use((0, cors_1.default)());
+    }
+    configureRoutes() {
+        this.expressApp.use(index_route_1.default);
+        this.expressApp.use(auth_route_1.default);
+        this.expressApp.use('/api', buscado_route_1.default);
+        this.expressApp.use('/api', donwload_route_1.default);
+        this.expressApp.use((req, res) => {
+            res.status(404).send({ error: 'endpoint not found' });
+        });
     }
     middleware() {
-        this.app.use((0, helmet_1.default)({
+        this.expressApp.use((0, helmet_1.default)({
             crossOriginResourcePolicy: false
         }));
         // esta configuracion establece que nustra carpeta public es un ruta estatica para servir recursos multimedia
         // this.app.use(express.static('public'))
         // this.app.use(helmet())
-        this.app.use(express_1.default.json());
-        this.app.use((0, cors_1.default)());
+        this.expressApp.use(express_1.default.json());
+        this.expressApp.use((0, cors_1.default)());
     }
-    dbContection() {
+    connectToDatabase() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield recompensadb_1.sequelize.authenticate();
+                console.log('Connection has been established successfully.');
             }
             catch (error) {
-                console.log(error);
+                throw new Error('Failed to connect to the database');
             }
         });
     }
     routes() {
-        this.app.use(index_route_1.default);
-        this.app.use(auth_route_1.default);
-        this.app.use('/api', buscado_route_1.default);
-        this.app.use('/api', donwload_route_1.default);
-        this.app.use((req, res) => {
+        this.expressApp.use(index_route_1.default);
+        this.expressApp.use(auth_route_1.default);
+        this.expressApp.use('/api', buscado_route_1.default);
+        this.expressApp.use('/api', donwload_route_1.default);
+        this.expressApp.use((req, res) => {
             res.status(404).send({ error: 'enpoint not found' });
         });
     }
     listen() {
-        this.app.listen(config_1.default.port, () => {
+        this.expressApp.listen(config_1.default.port, () => {
             console.log(`Server on port ${config_1.default.port}: http://localhost:${config_1.default.port}`);
         });
     }

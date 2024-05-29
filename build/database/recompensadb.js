@@ -9,5 +9,8 @@ exports.sequelize = new sequelize_1.Sequelize(config_1.dbConfig.database, config
     dialect: 'mysql',
     define: {
         underscored: true // Esta opción habilita la conversión automática de camelCase a snake_case
+    },
+    dialectOptions: {
+        ConnectionLimit: 30000
     }
 });

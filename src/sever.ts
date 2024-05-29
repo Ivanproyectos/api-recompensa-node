@@ -9,44 +9,67 @@ import donwloadRoute from './routes/donwload.route'
 import config from './config'
 
 class Server {
-  private readonly app: Application
+  private readonly expressApp: Application
+
   constructor () {
-    this.app = express()
-    this.middleware()
-    this.routes()
+    this.expressApp = express()
+    this.initializeApp()
+  }
+
+  private async initializeApp (): Promise<void> {
+    this.configureMiddleware()
+    this.configureRoutes()
+    await this.connectToDatabase()
+  }
+
+  private configureMiddleware (): void {
+    this.expressApp.use(helmet())
+    this.expressApp.use(express.json())
+    this.expressApp.use(cors())
+  }
+
+  private configureRoutes (): void {
+    this.expressApp.use(indexRoute)
+    this.expressApp.use(authRoute)
+    this.expressApp.use('/api', buscadosRoute)
+    this.expressApp.use('/api', donwloadRoute)
+    this.expressApp.use((req, res) => {
+      res.status(404).send({ error: 'endpoint not found' })
+    })
   }
 
   middleware (): void {
-    this.app.use(helmet({
+    this.expressApp.use(helmet({
       crossOriginResourcePolicy: false
     }))
     // esta configuracion establece que nustra carpeta public es un ruta estatica para servir recursos multimedia
     // this.app.use(express.static('public'))
     // this.app.use(helmet())
-    this.app.use(express.json())
-    this.app.use(cors())
+    this.expressApp.use(express.json())
+    this.expressApp.use(cors())
   }
 
-  async dbContection (): Promise<void> {
+  private async connectToDatabase (): Promise<void> {
     try {
       await sequelize.authenticate()
-    } catch (error: any) {
-      console.log(error)
+      console.log('Connection has been established successfully.')
+    } catch (error) {
+      throw new Error('Failed to connect to the database')
     }
   }
 
   routes (): void {
-    this.app.use(indexRoute)
-    this.app.use(authRoute)
-    this.app.use('/api', buscadosRoute)
-    this.app.use('/api', donwloadRoute)
-    this.app.use((req, res) => {
+    this.expressApp.use(indexRoute)
+    this.expressApp.use(authRoute)
+    this.expressApp.use('/api', buscadosRoute)
+    this.expressApp.use('/api', donwloadRoute)
+    this.expressApp.use((req, res) => {
       res.status(404).send({ error: 'enpoint not found' })
     })
   }
 
   listen (): void {
-    this.app.listen(config.port, () => {
+    this.expressApp.listen(config.port, () => {
       console.log(`Server on port ${config.port}: http://localhost:${config.port}`)
     })
   }
