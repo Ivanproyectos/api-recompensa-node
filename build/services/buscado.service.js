@@ -68,9 +68,9 @@ exports.getByIdBuscados = getByIdBuscados;
 const postBuscados = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _c, _d;
     try {
-        const { nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion } = req.body;
+        const { nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, alias } = req.body;
         const filename = (_d = (_c = req === null || req === void 0 ? void 0 : req.file) === null || _c === void 0 ? void 0 : _c.filename) !== null && _d !== void 0 ? _d : 'no-image.png';
-        yield buscado_model_1.BuscadoModel.create({ nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, image: filename });
+        yield buscado_model_1.BuscadoModel.create({ nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, alias, image: filename });
         res.status(201).send();
     }
     catch (error) {

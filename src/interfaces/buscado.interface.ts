@@ -4,6 +4,7 @@ export interface IBuscado {
   apellidos: string
   descripcion: string
   recompensa: string
+  alias: string
   categoriaId: number
   tipoPeligroId: number
   image: string

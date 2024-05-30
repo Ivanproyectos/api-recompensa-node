@@ -14,10 +14,18 @@ exports.validateCreate = [
         .isDecimal()
         .withMessage('la recompensa debe ser un número'),
     (0, express_validator_1.check)('descripcion', 'La descripción es obligatoria').notEmpty(),
+    (0, express_validator_1.check)('alias', 'El alias es obligatorio').notEmpty(),
     (0, express_validator_1.check)('tipoPeligroId', 'El tipo de peligro es obligatorio').notEmpty()
         .isNumeric()
         .withMessage('el tipo de peligro debe ser un número'),
-    (0, express_validator_1.check)('image', 'La imagen es obligatoria').notEmpty(),
+    // check('image', 'La imagen es obligatoria').notEmpty(),
+    (0, express_validator_1.check)('image').custom((value, { req }) => {
+        if (req.file === undefined) {
+            throw new Error('La imagen es obligatoria');
+        }
+        // Puedes añadir más validaciones de imagen aquí, como el tipo de archivo
+        return true;
+    }),
     (req, res, next) => {
         (0, validateHelper_1.validateResult)(req, res, next);
     }

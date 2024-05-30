@@ -4,7 +4,7 @@ import path from 'path'
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads/')
+    cb(null, 'public/images/')
   },
   filename: function (req, file, cb) {
     const uuid: string = uuidv4()

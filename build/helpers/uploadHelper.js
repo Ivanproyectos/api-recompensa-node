@@ -8,7 +8,7 @@ const uuid_1 = require("uuid");
 const path_1 = __importDefault(require("path"));
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/');
+        cb(null, 'public/images/');
     },
     filename: function (req, file, cb) {
         const uuid = (0, uuid_1.v4)();

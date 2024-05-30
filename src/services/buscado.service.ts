@@ -57,9 +57,9 @@ export const getByIdBuscados = async (req: Request, res: Response): Promise<Resp
 }
 export const postBuscados = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion } = req.body
+    const { nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, alias } = req.body
     const filename = req?.file?.filename ?? 'no-image.png'
-    await BuscadoModel.create({ nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, image: filename })
+    await BuscadoModel.create({ nombre, apellidos, recompensa, categoriaId, tipoPeligroId, descripcion, alias, image: filename })
     res.status(201).send()
   } catch (error) {
     console.error(error)

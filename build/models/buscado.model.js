@@ -15,6 +15,9 @@ exports.BuscadoModel = recompensadb_1.sequelize.define('buscado', {
     apellidos: {
         type: sequelize_1.DataTypes.STRING
     },
+    alias: {
+        type: sequelize_1.DataTypes.STRING
+    },
     descripcion: {
         type: sequelize_1.DataTypes.STRING
     },

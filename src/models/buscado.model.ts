@@ -24,6 +24,9 @@ export const BuscadoModel = sequelize.define<BuscadoInstance>('buscado', {
   apellidos: {
     type: DataTypes.STRING
   },
+  alias: {
+    type: DataTypes.STRING
+  },
   descripcion: {
     type: DataTypes.STRING
   },

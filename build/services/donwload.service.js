@@ -18,7 +18,7 @@ const promises_1 = __importDefault(require("fs/promises"));
 const getImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const imagePath = path_1.default.join('./public/uploads', id);
+        const imagePath = path_1.default.join('./public/images', id);
         const [, extension] = id.split('.');
         const imageBuffer = yield promises_1.default.readFile(imagePath);
         res.setHeader('Content-Type', `image/${extension}`);
