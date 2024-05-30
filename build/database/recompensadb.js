@@ -9,8 +9,10 @@ exports.sequelize = new sequelize_1.Sequelize(config_1.dbConfig.database, config
     dialect: 'mysql',
     define: {
         underscored: true // Esta opción habilita la conversión automática de camelCase a snake_case
-    },
-    dialectOptions: {
-        ConnectionLimit: 30000
     }
 });
+console.log(' Database: ' + config_1.dbConfig.database);
+console.log(' User: ' + config_1.dbConfig.username);
+console.log(' Password: ' + config_1.dbConfig.password);
+console.log(`port: ${config_1.dbConfig.port}`);
+console.log(' Host: ' + config_1.dbConfig.host);
