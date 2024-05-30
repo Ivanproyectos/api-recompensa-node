@@ -6,7 +6,7 @@ import { CategoriaModel } from '../models/categoria.model'
 export const getBuscados = async (req: Request, res: Response): Promise<void> => {
   try {
     const buscados = await BuscadoModel.findAll({
-      attributes: { exclude: ['tipoPeligroId', 'categoria_id', 'createdAt', 'updatedAt'] },
+      attributes: { exclude: ['tipo_peligro_id', 'categoria_id', 'createdAt', 'updatedAt'] },
       include: [
         {
           model: NivelPeligroModel,
