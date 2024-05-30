@@ -11,17 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBuscados = exports.putBuscados = exports.postBuscados = exports.getByIdBuscados = exports.getBuscados = void 0;
 const buscado_model_1 = require("../models/buscado.model");
-const peligrosidad_model_1 = require("../models/peligrosidad.model");
+const nivelPeligro_model_1 = require("../models/nivelPeligro.model");
+const categoria_model_1 = require("../models/categoria.model");
 const getBuscados = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const buscados = yield buscado_model_1.BuscadoModel.findAll({
-            attributes: { exclude: ['tipoPeligroId', 'createdAt', 'updatedAt'] },
+            attributes: { exclude: ['tipoPeligroId', 'categoria_id', 'createdAt', 'updatedAt'] },
             include: [
                 {
-                    model: peligrosidad_model_1.NivelPeligro,
+                    model: nivelPeligro_model_1.NivelPeligroModel,
                     as: 'nivelPeligro',
                     attributes: ['nombre']
+                },
+                {
+                    model: categoria_model_1.CategoriaModel,
+                    as: 'categoria', // Alias que usamos en la relación
+                    attributes: ['nombre'] // Traer solo la descripción de la categoría
                 }
             ]
         });
@@ -39,11 +45,16 @@ const getByIdBuscados = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const id = req.params.id;
         const buscado = yield buscado_model_1.BuscadoModel.findByPk(id, {
-            attributes: { exclude: ['tipo_peligro_id', 'createdAt', 'updatedAt'] },
+            attributes: { exclude: ['tipo_peligro_id', 'categoria_id', 'createdAt', 'updatedAt'] },
             include: [
                 {
-                    model: peligrosidad_model_1.NivelPeligro,
+                    model: nivelPeligro_model_1.NivelPeligroModel,
                     as: 'nivelPeligro', // Alias que usamos en la relación
+                    attributes: ['nombre'] // Traer solo la descripción de la categoría
+                },
+                {
+                    model: categoria_model_1.CategoriaModel,
+                    as: 'categoria', // Alias que usamos en la relación
                     attributes: ['nombre'] // Traer solo la descripción de la categoría
                 }
             ]

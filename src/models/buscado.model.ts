@@ -1,6 +1,7 @@
 import { sequelize } from '../database/recompensadb'
 import { DataTypes, Model, Optional } from 'sequelize'
-import { NivelPeligro } from './peligrosidad.model'
+import { NivelPeligroModel } from './nivelPeligro.model'
+import { CategoriaModel } from './categoria.model'
 import { IBuscado } from '../interfaces/buscado.interface'
 
 export interface BuscadoCreationAttributes
@@ -47,14 +48,26 @@ export const BuscadoModel = sequelize.define<BuscadoInstance>('buscado', {
   }
 })
 
-NivelPeligro.hasMany(BuscadoModel, {
+NivelPeligroModel.hasMany(BuscadoModel, {
   sourceKey: 'id',
   foreignKey: 'tipo_peligro_id',
   as: 'buscados'
 })
 
-BuscadoModel.belongsTo(NivelPeligro, {
+BuscadoModel.belongsTo(NivelPeligroModel, {
   targetKey: 'id',
   foreignKey: 'tipo_peligro_id',
   as: 'nivelPeligro'
+})
+
+CategoriaModel.hasMany(BuscadoModel, {
+  sourceKey: 'id',
+  foreignKey: 'categoria_id',
+  as: 'buscados'
+})
+
+BuscadoModel.belongsTo(CategoriaModel, {
+  targetKey: 'id',
+  foreignKey: 'categoria_id',
+  as: 'categoria'
 })

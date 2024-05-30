@@ -6,9 +6,9 @@ import upload from '../helpers/uploadHelper'
 
 const buscadoRoute = Router()
 
-buscadoRoute.get('/buscados', authorize, getBuscados as any)
+buscadoRoute.get('/buscados', getBuscados as any)
 buscadoRoute.get('/buscados/:id', getByIdBuscados as any)
-buscadoRoute.post('/buscados', upload.single('image'), validateCreate, postBuscados as any)
-buscadoRoute.put('/buscados/:id', valiteUpdate, putBuscados as any)
+buscadoRoute.post('/buscados', authorize, upload.single('image'), validateCreate, postBuscados as any)
+buscadoRoute.put('/buscados/:id', upload.single('image'), valiteUpdate, putBuscados as any)
 buscadoRoute.delete('/buscados/:id', valiteDelete, deleteBuscados as any)
 export default buscadoRoute

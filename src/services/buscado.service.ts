@@ -1,16 +1,22 @@
 import { Request, Response } from 'express'
 import { BuscadoModel } from '../models/buscado.model'
-import { NivelPeligro } from '../models/peligrosidad.model'
+import { NivelPeligroModel } from '../models/nivelPeligro.model'
+import { CategoriaModel } from '../models/categoria.model'
 
 export const getBuscados = async (req: Request, res: Response): Promise<void> => {
   try {
     const buscados = await BuscadoModel.findAll({
-      attributes: { exclude: ['tipoPeligroId', 'createdAt', 'updatedAt'] },
+      attributes: { exclude: ['tipoPeligroId', 'categoria_id', 'createdAt', 'updatedAt'] },
       include: [
         {
-          model: NivelPeligro,
+          model: NivelPeligroModel,
           as: 'nivelPeligro',
           attributes: ['nombre']
+        },
+        {
+          model: CategoriaModel,
+          as: 'categoria', // Alias que usamos en la relación
+          attributes: ['nombre'] // Traer solo la descripción de la categoría
         }
       ]
     })
@@ -28,11 +34,16 @@ export const getByIdBuscados = async (req: Request, res: Response): Promise<Resp
   try {
     const id = req.params.id
     const buscado = await BuscadoModel.findByPk(id, {
-      attributes: { exclude: ['tipo_peligro_id', 'createdAt', 'updatedAt'] },
+      attributes: { exclude: ['tipo_peligro_id', 'categoria_id', 'createdAt', 'updatedAt'] },
       include: [
         {
-          model: NivelPeligro,
+          model: NivelPeligroModel,
           as: 'nivelPeligro', // Alias que usamos en la relación
+          attributes: ['nombre'] // Traer solo la descripción de la categoría
+        },
+        {
+          model: CategoriaModel,
+          as: 'categoria', // Alias que usamos en la relación
           attributes: ['nombre'] // Traer solo la descripción de la categoría
         }
       ]
