@@ -10,7 +10,8 @@ export const getImage = async (req: Request, res: Response): Promise<void> => {
     const imageBuffer = await fs.readFile(imagePath)
     res.setHeader('Content-Type', `image/${extension}`)
     res.status(200).send(imageBuffer)
-  } catch {
+  } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }
