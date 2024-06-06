@@ -16,14 +16,16 @@ class Server {
     this.initializeApp()
   }
 
-  private async initializeApp (): Promise<void> {
+  private initializeApp (): void {
     this.configureMiddleware()
     this.configureRoutes()
-    await this.connectToDatabase()
+    this.connectToDatabase()
   }
 
   private configureMiddleware (): void {
-    this.expressApp.use(helmet())
+    this.expressApp.use(helmet({
+      crossOriginResourcePolicy: false
+    }))
     this.expressApp.use(express.json())
     this.expressApp.use(cors())
   }
@@ -38,37 +40,14 @@ class Server {
     })
   }
 
-  middleware (): void {
-    this.expressApp.use(helmet({
-      crossOriginResourcePolicy: false
-    }))
-    // esta configuracion establece que nustra carpeta public es un ruta estatica para servir recursos multimedia
-    // this.app.use(express.static('public'))
-    // this.app.use(helmet())
-    this.expressApp.use(express.json())
-    this.expressApp.use(cors())
+  private connectToDatabase (): void {
+    sequelize.authenticate().then(() =>
+      console.log('Connection has been established successfully.'))
+      .catch((error) => console.error('Unable to connect to the database:', error))
+    console.log('Connection has been established successfully.')
   }
 
-  private async connectToDatabase (): Promise<void> {
-    try {
-      await sequelize.authenticate()
-      console.log('Connection has been established successfully.')
-    } catch (error) {
-      throw new Error('Failed to connect to the database')
-    }
-  }
-
-  routes (): void {
-    this.expressApp.use(indexRoute)
-    this.expressApp.use(authRoute)
-    this.expressApp.use('/api', buscadosRoute)
-    this.expressApp.use('/api', donwloadRoute)
-    this.expressApp.use((req, res) => {
-      res.status(404).send({ error: 'enpoint not found' })
-    })
-  }
-
-  listen (): void {
+  public start (): void {
     this.expressApp.listen(config.port, () => {
       console.log(`Server on port ${config.port}: http://localhost:${config.port}`)
     })

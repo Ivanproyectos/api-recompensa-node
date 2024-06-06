@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBuscados = exports.putBuscados = exports.postBuscados = exports.getByIdBuscados = exports.getBuscados = void 0;
+exports.deleteBuscados = exports.actualizarImagen = exports.putBuscados = exports.postBuscados = exports.getByIdBuscados = exports.getBuscados = void 0;
 const buscado_model_1 = require("../models/buscado.model");
 const nivelPeligro_model_1 = require("../models/nivelPeligro.model");
 const categoria_model_1 = require("../models/categoria.model");
@@ -17,7 +17,7 @@ const getBuscados = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     var _a;
     try {
         const buscados = yield buscado_model_1.BuscadoModel.findAll({
-            attributes: { exclude: ['tipoPeligroId', 'categoria_id', 'createdAt', 'updatedAt'] },
+            attributes: { exclude: ['tipo_peligro_id', 'categoria_id', 'createdAt', 'updatedAt'] },
             include: [
                 {
                     model: nivelPeligro_model_1.NivelPeligroModel,
@@ -113,6 +113,25 @@ const putBuscados = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.putBuscados = putBuscados;
+const actualizarImagen = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _e, _f;
+    try {
+        const { id } = req.params;
+        const filename = (_f = (_e = req === null || req === void 0 ? void 0 : req.file) === null || _e === void 0 ? void 0 : _e.filename) !== null && _f !== void 0 ? _f : 'no-image.png';
+        const updatedBuscado = yield buscado_model_1.BuscadoModel.findByPk(id);
+        if (updatedBuscado == null) {
+            return res.status(404).json({ message: 'persona buscada not found' });
+        }
+        updatedBuscado.image = filename;
+        yield updatedBuscado.save();
+        return res.status(200).send();
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error, contact API administrator' });
+    }
+});
+exports.actualizarImagen = actualizarImagen;
 const deleteBuscados = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;

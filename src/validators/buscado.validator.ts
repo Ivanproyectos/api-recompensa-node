@@ -5,6 +5,15 @@ import { validateResult } from '../helpers/validateHelper'
 const validateIdparam = [
   param('id').isInt().withMessage('El ID debe ser un número entero')
 ]
+const rulesImage = [
+  check('image').custom((value, { req }) => {
+    if (req.file === undefined) {
+      throw new Error('La imagen es obligatoria')
+    }
+    // Puedes añadir más validaciones de imagen aquí, como el tipo de archivo
+    return true
+  })
+]
 export const validateCreate = [
   check('nombre', 'El nombre es obligatorio').notEmpty(),
   check('apellidos', 'Los apellidos son obligatorios').notEmpty(),
@@ -18,24 +27,25 @@ export const validateCreate = [
     .isNumeric()
     .withMessage('el tipo de peligro debe ser un número'),
   // check('image', 'La imagen es obligatoria').notEmpty(),
-  check('image').custom((value, { req }) => {
-    if (req.file === undefined) {
-      throw new Error('La imagen es obligatoria')
-    }
-    // Puedes añadir más validaciones de imagen aquí, como el tipo de archivo
-    return true
-  }),
+  ...rulesImage,
   (req: Request, res: Response, next: NextFunction) => {
     validateResult(req, res, next)
   }
 ]
-
 export const valiteUpdate = [
   ...validateIdparam,
   ...validateCreate
 ]
 export const valiteDelete = [
   ...validateIdparam,
+  (req: Request, res: Response, next: NextFunction) => {
+    validateResult(req, res, next)
+  }
+]
+
+export const validateUpdateImagen = [
+  ...validateIdparam,
+  ...rulesImage,
   (req: Request, res: Response, next: NextFunction) => {
     validateResult(req, res, next)
   }

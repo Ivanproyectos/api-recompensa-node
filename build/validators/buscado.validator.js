@@ -1,10 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.valiteDelete = exports.valiteUpdate = exports.validateCreate = void 0;
+exports.validateUpdateImagen = exports.valiteDelete = exports.valiteUpdate = exports.validateCreate = void 0;
 const express_validator_1 = require("express-validator");
 const validateHelper_1 = require("../helpers/validateHelper");
 const validateIdparam = [
     (0, express_validator_1.param)('id').isInt().withMessage('El ID debe ser un número entero')
+];
+const rulesImage = [
+    (0, express_validator_1.check)('image').custom((value, { req }) => {
+        if (req.file === undefined) {
+            throw new Error('La imagen es obligatoria');
+        }
+        // Puedes añadir más validaciones de imagen aquí, como el tipo de archivo
+        return true;
+    })
 ];
 exports.validateCreate = [
     (0, express_validator_1.check)('nombre', 'El nombre es obligatorio').notEmpty(),
@@ -19,13 +28,7 @@ exports.validateCreate = [
         .isNumeric()
         .withMessage('el tipo de peligro debe ser un número'),
     // check('image', 'La imagen es obligatoria').notEmpty(),
-    (0, express_validator_1.check)('image').custom((value, { req }) => {
-        if (req.file === undefined) {
-            throw new Error('La imagen es obligatoria');
-        }
-        // Puedes añadir más validaciones de imagen aquí, como el tipo de archivo
-        return true;
-    }),
+    ...rulesImage,
     (req, res, next) => {
         (0, validateHelper_1.validateResult)(req, res, next);
     }
@@ -36,6 +39,13 @@ exports.valiteUpdate = [
 ];
 exports.valiteDelete = [
     ...validateIdparam,
+    (req, res, next) => {
+        (0, validateHelper_1.validateResult)(req, res, next);
+    }
+];
+exports.validateUpdateImagen = [
+    ...validateIdparam,
+    ...rulesImage,
     (req, res, next) => {
         (0, validateHelper_1.validateResult)(req, res, next);
     }

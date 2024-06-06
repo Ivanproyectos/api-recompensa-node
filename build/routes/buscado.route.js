@@ -13,5 +13,6 @@ buscadoRoute.get('/buscados', buscado_service_1.getBuscados);
 buscadoRoute.get('/buscados/:id', buscado_service_1.getByIdBuscados);
 buscadoRoute.post('/buscados', auth_1.authorize, uploadHelper_1.default.single('image'), buscado_validator_1.validateCreate, buscado_service_1.postBuscados);
 buscadoRoute.put('/buscados/:id', uploadHelper_1.default.single('image'), buscado_validator_1.valiteUpdate, buscado_service_1.putBuscados);
+buscadoRoute.patch('/buscados-image/:id', uploadHelper_1.default.single('image'), buscado_validator_1.validateUpdateImagen, buscado_service_1.actualizarImagen);
 buscadoRoute.delete('/buscados/:id', buscado_validator_1.valiteDelete, buscado_service_1.deleteBuscados);
 exports.default = buscadoRoute;

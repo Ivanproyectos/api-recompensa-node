@@ -7,9 +7,14 @@ export const getImage = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params
     const imagePath = path.join('./public/images', id)
     const [, extension] = id.split('.')
-    const imageBuffer = await fs.readFile(imagePath)
-    res.setHeader('Content-Type', `image/${extension}`)
-    res.status(200).send(imageBuffer)
+    try {
+      const imageBuffer = await fs.readFile(imagePath)
+      res.setHeader('Content-Type', `image/${extension}`)
+      res.status(200).send(imageBuffer)
+    } catch (error) {
+      console.error(error)
+      res.status(404).json({ error: 'Image not found' })
+    }
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Internal server error' })

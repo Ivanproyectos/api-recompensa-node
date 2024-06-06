@@ -98,6 +98,22 @@ export const putBuscados = async (req: Request, res: Response): Promise<Response
     return res.status(500).json({ message: 'Internal server error, contact API administrator' })
   }
 }
+export const actualizarImagen = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { id } = req.params
+    const filename = req?.file?.filename ?? 'no-image.png'
+    const updatedBuscado = await BuscadoModel.findByPk(id)
+    if (updatedBuscado == null) {
+      return res.status(404).json({ message: 'persona buscada not found' })
+    }
+    updatedBuscado.image = filename
+    await updatedBuscado.save()
+    return res.status(200).send()
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Internal server error, contact API administrator' })
+  }
+}
 export const deleteBuscados = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { id } = req.params

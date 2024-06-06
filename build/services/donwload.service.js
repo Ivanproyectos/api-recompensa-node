@@ -20,11 +20,18 @@ const getImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.params;
         const imagePath = path_1.default.join('./public/images', id);
         const [, extension] = id.split('.');
-        const imageBuffer = yield promises_1.default.readFile(imagePath);
-        res.setHeader('Content-Type', `image/${extension}`);
-        res.status(200).send(imageBuffer);
+        try {
+            const imageBuffer = yield promises_1.default.readFile(imagePath);
+            res.setHeader('Content-Type', `image/${extension}`);
+            res.status(200).send(imageBuffer);
+        }
+        catch (error) {
+            console.error(error);
+            res.status(404).json({ error: 'Image not found' });
+        }
     }
-    catch (_a) {
+    catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
