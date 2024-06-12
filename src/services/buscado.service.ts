@@ -2,31 +2,42 @@ import { Request, Response } from 'express'
 import { BuscadoModel } from '../models/buscado.model'
 import { NivelPeligroModel } from '../models/nivelPeligro.model'
 import { CategoriaModel } from '../models/categoria.model'
+import { Op, fn, col } from 'sequelize'
 
 export const getBuscados = async (req: Request, res: Response): Promise<void> => {
   try {
-    const buscados = await BuscadoModel.findAll({
+    const categoryId: number | null = Number.isNaN(Number(req.query.categoryId)) ||
+     Number(req.query.categoryId) === 0
+      ? null
+      : Number(req.query.categoryId)
+    const aliasOrName: string = String(req.query.filter ?? '')
+
+    const options = {
+      where: {
+        categoriaId: { [Op.eq]: fn('IFNULL', categoryId, col('categoria_id')) },
+        [Op.or]: [
+          { nombre: { [Op.like]: `%${aliasOrName}%` } },
+          { alias: { [Op.like]: `%${aliasOrName}%` } },
+          { apellidos: { [Op.like]: `%${aliasOrName}%` } }
+        ]
+      },
       attributes: { exclude: ['tipo_peligro_id', 'categoria_id', 'createdAt', 'updatedAt'] },
       include: [
-        {
-          model: NivelPeligroModel,
-          as: 'nivelPeligro',
-          attributes: ['nombre']
-        },
-        {
-          model: CategoriaModel,
-          as: 'categoria', // Alias que usamos en la relación
-          attributes: ['nombre'] // Traer solo la descripción de la categoría
-        }
+        { model: NivelPeligroModel, as: 'nivelPeligro', attributes: ['nombre'] },
+        { model: CategoriaModel, as: 'categoria', attributes: ['nombre'] }
       ]
-    })
+    }
+
+    const buscados = await BuscadoModel.findAll(options)
     const apiImageUrl = `${req.protocol}://${req.get('host') ?? 'localhost'}/api/download/image/`
     const buscadosWithImageUrl = buscados.map(buscado => ({
       ...buscado.get({ plain: true }),
       image: `${apiImageUrl}${buscado.image}`
     }))
+
     res.json(buscadosWithImageUrl)
   } catch (error) {
+    console.error(error)
     res.status(500).json({ message: 'Internal server error, contact API administrator' })
   }
 }

@@ -10,4 +10,4 @@ export const NivelPeligroModel = sequelize.define('nivel_peligros', {
     type: DataTypes.STRING,
     allowNull: false
   }
-})
+}, { timestamps: false })

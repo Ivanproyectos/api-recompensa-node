@@ -10,4 +10,4 @@ export const CategoriaModel = sequelize.define('categoria_delitos', {
     type: DataTypes.STRING,
     allowNull: false
   }
-})
+}, { timestamps: false })

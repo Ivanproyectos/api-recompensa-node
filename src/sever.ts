@@ -6,6 +6,7 @@ import buscadosRoute from './routes/buscado.route'
 import indexRoute from './routes/index.route'
 import authRoute from './routes/auth.route'
 import donwloadRoute from './routes/donwload.route'
+import categoriaRoute from './routes/categorias.route'
 import config from './config'
 
 class Server {
@@ -35,6 +36,7 @@ class Server {
     this.expressApp.use(authRoute)
     this.expressApp.use('/api', buscadosRoute)
     this.expressApp.use('/api', donwloadRoute)
+    this.expressApp.use('/api', categoriaRoute)
     this.expressApp.use((req, res) => {
       res.status(404).send({ error: 'endpoint not found' })
     })
