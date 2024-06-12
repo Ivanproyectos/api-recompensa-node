@@ -12,4 +12,4 @@ exports.NivelPeligroModel = recompensadb_1.sequelize.define('nivel_peligros', {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     }
-});
+}, { timestamps: false });

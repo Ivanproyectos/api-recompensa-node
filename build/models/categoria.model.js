@@ -12,4 +12,4 @@ exports.CategoriaModel = recompensadb_1.sequelize.define('categoria_delitos', {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     }
-});
+}, { timestamps: false });

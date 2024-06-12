@@ -11,6 +11,7 @@ const buscado_route_1 = __importDefault(require("./routes/buscado.route"));
 const index_route_1 = __importDefault(require("./routes/index.route"));
 const auth_route_1 = __importDefault(require("./routes/auth.route"));
 const donwload_route_1 = __importDefault(require("./routes/donwload.route"));
+const categorias_route_1 = __importDefault(require("./routes/categorias.route"));
 const config_1 = __importDefault(require("./config"));
 class Server {
     constructor() {
@@ -34,6 +35,7 @@ class Server {
         this.expressApp.use(auth_route_1.default);
         this.expressApp.use('/api', buscado_route_1.default);
         this.expressApp.use('/api', donwload_route_1.default);
+        this.expressApp.use('/api', categorias_route_1.default);
         this.expressApp.use((req, res) => {
             res.status(404).send({ error: 'endpoint not found' });
         });
