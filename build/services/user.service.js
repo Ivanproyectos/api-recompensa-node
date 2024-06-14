@@ -16,7 +16,7 @@ const validarUsuario = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     const { correo, password } = req.body;
     const usuario = yield user_model_1.User.findOne({ where: { correo, password } });
     if (usuario == null) {
-        return res.status(404).send({ error: 'Usuario o contraseña incorrecta' });
+        return res.status(401).send({ error: 'Usuario o contraseña incorrecta' });
     }
     const response = (0, JwtToken_1.generateToken)(usuario);
     return res.status(200).send(response);

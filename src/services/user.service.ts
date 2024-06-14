@@ -7,7 +7,7 @@ export const validarUsuario = async (req: Request, res: Response, next: any): Pr
   const { correo, password } = req.body
   const usuario = await User.findOne({ where: { correo, password } })
   if (usuario == null) {
-    return res.status(404).send({ error: 'Usuario o contraseña incorrecta' })
+    return res.status(401).send({ error: 'Usuario o contraseña incorrecta' })
   }
   const response: IAuth = generateToken(usuario)
   return res.status(200).send(response)
