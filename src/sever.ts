@@ -33,7 +33,7 @@ class Server {
 
   private configureRoutes (): void {
     this.expressApp.use(indexRoute)
-    this.expressApp.use(authRoute)
+    this.expressApp.use('/api', authRoute)
     this.expressApp.use('/api', buscadosRoute)
     this.expressApp.use('/api', donwloadRoute)
     this.expressApp.use('/api', categoriaRoute)

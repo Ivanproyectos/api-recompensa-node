@@ -32,7 +32,7 @@ class Server {
     }
     configureRoutes() {
         this.expressApp.use(index_route_1.default);
-        this.expressApp.use(auth_route_1.default);
+        this.expressApp.use('/api', auth_route_1.default);
         this.expressApp.use('/api', buscado_route_1.default);
         this.expressApp.use('/api', donwload_route_1.default);
         this.expressApp.use('/api', categorias_route_1.default);
