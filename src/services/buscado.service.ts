@@ -6,19 +6,20 @@ import { Op, fn, col } from 'sequelize'
 
 export const getBuscados = async (req: Request, res: Response): Promise<void> => {
   try {
-    const categoryId: number | null = Number.isNaN(Number(req.query.categoryId)) ||
-     Number(req.query.categoryId) === 0
+    const categoryId = Number.isNaN(Number(req.query.categoryId)) || Number(req.query.categoryId) === 0
       ? null
       : Number(req.query.categoryId)
-    const aliasOrName: string = String(req.query.filter ?? '')
+    const searchQuery = String(req.query.filter ?? '')
 
     const options = {
       where: {
-        categoriaId: { [Op.eq]: fn('IFNULL', categoryId, col('categoria_id')) },
+        categoriaId: {
+          [Op.eq]: categoryId ?? col('categoria_id')
+        },
         [Op.or]: [
-          { nombre: { [Op.like]: `%${aliasOrName}%` } },
-          { alias: { [Op.like]: `%${aliasOrName}%` } },
-          { apellidos: { [Op.like]: `%${aliasOrName}%` } }
+          { nombre: { [Op.like]: `%${searchQuery}%` } },
+          { alias: { [Op.like]: `%${searchQuery}%` } },
+          { apellidos: { [Op.like]: `%${searchQuery}%` } }
         ]
       },
       attributes: { exclude: ['tipo_peligro_id', 'categoria_id', 'createdAt', 'updatedAt'] },
@@ -37,7 +38,6 @@ export const getBuscados = async (req: Request, res: Response): Promise<void> =>
 
     res.json(buscadosWithImageUrl)
   } catch (error) {
-    console.error(error)
     res.status(500).json({ message: 'Internal server error, contact API administrator' })
   }
 }
